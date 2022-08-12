@@ -41,7 +41,7 @@ namespace Demo.Design
             vm.ArticleList.Returns(articleList);
             vm.SelectedArticle.Returns(articleList[3]);
             vm.ReplayItemList.Returns(replayList);
-            vm.SelectedRelayItem.Returns(replayList[5]);
+            vm.SelectedReplayItem.Returns(replayList[5]);
 
             //frame
             var frameChangingTime = TimeSpan.FromSeconds(3);

@@ -13,7 +13,7 @@ namespace Demo.Interface
         ICommand PracticeCommand { get; }
 
         IList<string> ReplayItemList { get; }
-        string SelectedRelayItem { get; set; }
+        string SelectedReplayItem { get; set; }
         ICommand ReplayCommand { get; }
 
         object CurrentFrame { get; }
