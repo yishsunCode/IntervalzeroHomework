@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Demo.Interface;
 using NSubstitute;
 using System;
 using System.ComponentModel;
@@ -7,7 +8,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Windows;
 
-namespace Demo.Interface
+namespace Demo.Design
 {
     public class FakeDemoViewModelFactory
     {

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Features.OwnedInstances;
+using Demo.Design;
 using Demo.Interface;
 using Demo.View;
 using System;
@@ -20,7 +21,6 @@ namespace Demo.CompositionRoot
                 var builder = new ContainerBuilder();
 
                 builder
-                    //.RegisterType<IDemoViewModel>()
                     .Register((c, p) => FakeDemoViewModelFactory.Create())
                     .As<IDemoViewModel>()
                     ;
