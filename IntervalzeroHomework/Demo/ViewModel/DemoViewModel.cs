@@ -6,7 +6,6 @@ using Demo.ViewModel.Replay;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -18,7 +17,8 @@ namespace Demo.ViewModel
 {
     class DemoViewModel : ObservableObject, IDemoViewModel
     {
-        IDisposable _frameDisposer = Disposable.Empty;
+        //TODO: IDisposable _frameDisposer = Disposable.Empty;
+
         IList<string> _articleList = new string[] { };
         ObservableCollection<string> _replayItemList = new();
         string _selectedArticle;
@@ -55,7 +55,12 @@ namespace Demo.ViewModel
                 var frame = new InputFrame(articleName, text, item => 
                 {
                     _replayItemList.Add(item.Name);
+                    _replayListChanged.OnNext(default);
+
+                    SelectedReplayItem = item.Name;
+
                     _recordDict.Add(item.Name, item);
+
                 });
                 CurrentFrame = frame;
             }
@@ -74,7 +79,14 @@ namespace Demo.ViewModel
         public IList<string> ArticleList
         {
             get { return _articleList; }
-            private set { this.SetProperty(ref _articleList, value); }
+            private set 
+            { 
+                var success = this.SetProperty(ref _articleList, value);
+                if (success) 
+                {
+                    _articleListChanged.OnNext(default);
+                }
+            }
         }
 
         public string SelectedArticle
@@ -102,7 +114,7 @@ namespace Demo.ViewModel
         }
     }
 
-    namespace Replay 
+    namespace Replay
     {
 
         class ReplayItem
@@ -159,10 +171,10 @@ namespace Demo.ViewModel
         {
             CompositeDisposable _disposer = new();
             Subject<string> _userTextChanged = new();
-            bool _isValid;
-            string _userText;
+            bool _isValid = false;
+            string _userText = "";
+            bool _isFinished = false;
             ReplayItem _item;
-            bool _isFinished;
 
             //dependency
             string _articleName;
@@ -181,8 +193,6 @@ namespace Demo.ViewModel
            
             void Initialize() 
             {
-                _isFinished = false;
-
                 _item = new ReplayItem(_articleName);
                 Disposable.Create(() =>
                 {

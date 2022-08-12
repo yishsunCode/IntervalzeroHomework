@@ -3,6 +3,7 @@ using Autofac.Features.OwnedInstances;
 using Demo.Design;
 using Demo.Interface;
 using Demo.View;
+using Demo.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,14 @@ namespace Demo.CompositionRoot
                 var builder = new ContainerBuilder();
 
                 builder
-                    .Register((c, p) => FakeDemoViewModelFactory.Create())
+                    //.Register((c, p) => FakeDemoViewModelFactory.Create())
+                    .RegisterType<DemoViewModel>()
                     .As<IDemoViewModel>()
+                    ;
+
+                builder
+                    .Register((c, p) => FakeInputServiceFactory.Create())
+                    .As<IInputService>()
                     ;
 
                 builder.RegisterType<DemoView>()
