@@ -90,6 +90,7 @@ namespace Demo.Design
                         });
                     //
                     frame.UserText.Returns("UserInput...");
+                    frame.HintText.Returns("HINT~hint~HintHINT");
 
                     vm.CurrentFrame.Returns(frame);
                     vm.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(vm, new PropertyChangedEventArgs(nameof(vm.CurrentFrame)));
@@ -121,6 +122,7 @@ namespace Demo.Design
 
                     //
                     frame.ReplayingText.Returns("Replay...");
+                    frame.HintText.Returns("HINT~hint~HintHINT");
                     vm.CurrentFrame.Returns(frame);
                     vm.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(vm, new PropertyChangedEventArgs(nameof(vm.CurrentFrame)));
                 }

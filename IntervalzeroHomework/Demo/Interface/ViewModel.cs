@@ -21,11 +21,13 @@ namespace Demo.Interface
 
     public interface IInputFrame : INotifyPropertyChanged
     {
+        string HintText { get; }
         bool IsValid { get; }
         string UserText { get; set; }
     }
     public interface IReplayFrame : INotifyPropertyChanged
     {
+        string HintText { get; }
         string ReplayingText { get; }
     }
     public interface IWaitingFrame 

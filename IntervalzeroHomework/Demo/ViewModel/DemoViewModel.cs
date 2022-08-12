@@ -249,6 +249,8 @@ namespace Demo.ViewModel
                     }
                 }
             }
+
+            public string HintText => throw new NotImplementedException();
         }
         class ReplayFrame : ObservableObject, IReplayFrame, IDisposable
         {
@@ -276,6 +278,7 @@ namespace Demo.ViewModel
                 private set { SetProperty(ref _replayingText, value); }
             }
 
+            public string HintText => throw new NotImplementedException();
         }
     }
 }
