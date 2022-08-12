@@ -15,8 +15,11 @@ namespace Utility.Extension
         {
             #region Require
 
-            if (item == null) throw new ArgumentNullException();
-            if (container == null) throw new ArgumentNullException();
+            if (item == null
+                || container == null) 
+            {
+                return null;
+            }
 
             #endregion
 
