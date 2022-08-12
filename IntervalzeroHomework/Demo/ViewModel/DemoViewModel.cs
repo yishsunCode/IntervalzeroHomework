@@ -69,7 +69,7 @@ namespace Demo.ViewModel
             ReplayCommand = ReactiveCommand.Create(() =>
             {
                 var item = _recordDict[SelectedReplayItem];
-                CurrentFrame = new ReplayFrame(item.GetReplaySequence());
+                CurrentFrame = new ReplayFrame(item.OriginalText, item.GetReplaySequence());
             }, _replayListChanged.StartWith(true).Select(_ => ReplayItemList.Any()));
 
         }
@@ -122,10 +122,12 @@ namespace Demo.ViewModel
             List<ReplayRecord> _records = new();
             DateTime _prevTime;
             
-            public ReplayItem(string name) 
+            public ReplayItem(string name, string originalText) 
             {
                 Name = name;
+                OriginalText = originalText;
             }
+            public string OriginalText { get; }
             public string Name { get; }
             public void Record(string text)
             {
@@ -175,6 +177,7 @@ namespace Demo.ViewModel
             string _userText = "";
             bool _isFinished = false;
             ReplayItem _item;
+            string _hintText;
 
             //dependency
             string _articleName;
@@ -193,7 +196,7 @@ namespace Demo.ViewModel
            
             void Initialize() 
             {
-                _item = new ReplayItem(_articleName);
+                _item = new ReplayItem(_articleName, _originalText);
                 Disposable.Create(() =>
                 {
                     if (!_isFinished) 
@@ -214,9 +217,12 @@ namespace Demo.ViewModel
                 .Merge()
                 .Subscribe(userText =>
                 {
-                    var originalSubstring = _originalText.Substring(0, userText.Length);
+                    var originalSubstring = _originalText.Substring(0, Math.Min(userText.Length, _originalText.Length));
                     var isValid = userText == originalSubstring;
                     IsValid = isValid;
+
+                    //Hint Text
+                    HintText = _originalText.Substring(Math.Min(_originalText.Length, userText.Length));
 
                     if (IsValid && userText.Length == _originalText.Length) 
                     {
@@ -250,24 +256,37 @@ namespace Demo.ViewModel
                 }
             }
 
-            public string HintText => throw new NotImplementedException();
+            public string HintText 
+            {
+                get { return _hintText; }
+                private set { SetProperty(ref _hintText, value); }
+            }
         }
         class ReplayFrame : ObservableObject, IReplayFrame, IDisposable
         {
             CompositeDisposable _disposer = new CompositeDisposable();
             string _replayingText;
+            string _hintText;
 
             //dependency
+            string _originalText;
             IObservable<string> _replaySequence;
 
-            public ReplayFrame(IObservable<string> replaySequence)
+            public ReplayFrame(string originalText, IObservable<string> replaySequence)
             {
+                _originalText = originalText;
                 _replaySequence = replaySequence;
                 Initialize();
             }
             void Initialize() 
             {
-                _replaySequence.Subscribe(s => ReplayingText = s)
+                _replaySequence.Subscribe(s => 
+                {
+                    ReplayingText = s;
+
+                    //Hint Text
+                    HintText = _originalText.Substring(Math.Min(_originalText.Length, ReplayingText.Length));
+                })
                     .DisposedBy(_disposer);
             }
             public void Dispose() => _disposer.Dispose();
@@ -277,8 +296,15 @@ namespace Demo.ViewModel
                 get { return _replayingText; }
                 private set { SetProperty(ref _replayingText, value); }
             }
-
-            public string HintText => throw new NotImplementedException();
+            public string HintText 
+            {
+                get { return _hintText; }
+                private set { SetProperty(ref _hintText, value); }
+            }
+        }
+        static class FrameUtility 
+        {
+            
         }
     }
 }
