@@ -8,10 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
     <Folder Include="CompositionRoot\" />
-    <Folder Include="Xaml\" />
-    <Folder Include="View\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 
