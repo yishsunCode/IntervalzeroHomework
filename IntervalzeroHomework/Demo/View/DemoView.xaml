@@ -27,7 +27,7 @@
             <Button Command="{Binding Path=ReplayItemList}"
                     Content="Replay"
                     DockPanel.Dock="Right" />
-            <ComboBox ItemsSource="{Binding Path=ReplayItemList}" SelectedItem="{Binding Path=SelectedRelayItem}" />
+            <ComboBox ItemsSource="{Binding Path=ReplayItemList}" SelectedItem="{Binding Path=SelectedReplayItem}" />
         </DockPanel>
 
         <ContentPresenter Content="{Binding Path=CurrentFrame, FallbackValue=0}" ContentTemplateSelector="{x:Static ext:InterfaceDataTemplateSelector.Instance}" />
