@@ -26,7 +26,7 @@ namespace Demo.Interface
     }
     public interface IReplayFrame : INotifyPropertyChanged
     {
-        string UserText { get; }
+        string ReplayingText { get; }
     }
     public interface IWaitingFrame 
     {

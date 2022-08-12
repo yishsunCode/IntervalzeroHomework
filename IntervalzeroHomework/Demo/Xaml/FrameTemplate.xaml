@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:vm="clr-namespace:Demo.Interface"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DataTemplate DataType="{x:Type vm:IWaitingFrame}">
+        <TextBlock HorizontalAlignment="Center"
+                 VerticalAlignment="Center"
+                   FontSize="42"
+                   Text="Waiting"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:IInputFrame}">
+        <TextBox HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 x:Name="uxBox"
+                 Text="{Binding Path=UserText}"/>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=IsValid}" Value="False">
+                <Setter TargetName="uxBox" Property="Background" Value="LightPink"/>
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:IReplayFrame}">
+        <TextBox HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 x:Name="uxBox"
+                 IsReadOnly="True"
+                 Text="{Binding Path=ReplayingText, Mode=OneWay}"/>
+    </DataTemplate>
+</ResourceDictionary>

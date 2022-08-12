@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Demo.View.DemoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Demo.View"
+             xmlns:vm="clr-namespace:Demo.Interface"
+             d:DataContext="{d:DesignInstance vm:IDemoViewModel, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <DockPanel>
+            <Button DockPanel.Dock="Left" Command="{Binding Path=ChooseFolderCommand}"
+                    Content="Choose Folder"/>
+            <Button DockPanel.Dock="Right" Command="{Binding Path=PracticeCommand}"
+                    Content="Practice"/>
+            <ComboBox ItemsSource="{Binding Path=ArticleList}"
+                      SelectedItem="{Binding Path=SelectedArticle}"/>
+        </DockPanel>
+        
+        <DockPanel>
+            <Button DockPanel.Dock="Right" Command="{Binding Path=ReplayItemList}"
+                    Content="Practice"/>
+            <ComboBox ItemsSource="{Binding Path=ReplayItemList}"
+                      SelectedItem="{Binding Path=SelectedRelayItem}"/>
+        </DockPanel>
+        
+        <ContentPresenter Content="{Binding Path=CurrentFrame}"/>
+    </DockPanel>
+</UserControl>
