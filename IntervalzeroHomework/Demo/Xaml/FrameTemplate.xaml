@@ -11,8 +11,7 @@
         <TextBox x:Name="uxBox"
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
-                 Background="LightGreen"
-                 Text="{Binding Path=UserText}" />
+                 Text="{Binding Path=UserText, UpdateSourceTrigger=PropertyChanged}" />
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsValid}" Value="False">
                 <Setter TargetName="uxBox" Property="Background" Value="#FFFFF2F4" />
