@@ -24,7 +24,7 @@
         </DockPanel>
 
         <DockPanel DockPanel.Dock="Top">
-            <Button Command="{Binding Path=ReplayItemList}"
+            <Button Command="{Binding Path=ReplayCommand}"
                     Content="Replay"
                     DockPanel.Dock="Right" />
             <ComboBox ItemsSource="{Binding Path=ReplayItemList}" SelectedItem="{Binding Path=SelectedReplayItem}" />
