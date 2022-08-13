@@ -52,14 +52,24 @@ namespace Demo.ViewModel
                 var text = _inputService.GetArticle(SelectedArticle);
                 var articleName = SelectedArticle;
 
-                var frame = new InputFrame(articleName, text, item => 
+                var frame = new InputFrame(articleName, text, item =>
                 {
-                    _replayItemList.Add(item.Name);
+                    var name = articleName;
+
+                    for (int i = 1;  _recordDict.ContainsKey(name); i++)
+                    {
+                        name = $"{articleName}_{i}";
+                    }
+
+                    item.Name = name;
+                    _recordDict.Add(name, item);
+
+                    //update target item
+                    SelectedReplayItem = name;
+
+                    //update list
+                    _replayItemList.Add(name);
                     _replayListChanged.OnNext(default);
-
-                    SelectedReplayItem = item.Name;
-
-                    _recordDict.Add(item.Name, item);
 
                 });
                 CurrentFrame = frame;
@@ -122,13 +132,12 @@ namespace Demo.ViewModel
             List<ReplayRecord> _records = new();
             DateTime _prevTime;
             
-            public ReplayItem(string name, string originalText) 
+            public ReplayItem(string originalText) 
             {
-                Name = name;
                 OriginalText = originalText;
             }
             public string OriginalText { get; }
-            public string Name { get; }
+            public string Name { get; set; }
             public void Record(string text)
             {
                 var now = DateTime.Now;
@@ -173,11 +182,11 @@ namespace Demo.ViewModel
         {
             CompositeDisposable _disposer = new();
             Subject<string> _userTextChanged = new();
-            bool _isValid = false;
             string _userText = "";
             bool _isFinished = false;
             ReplayItem _item;
             string _hintText;
+            InputFrameState _state;
 
             //dependency
             string _articleName;
@@ -196,7 +205,7 @@ namespace Demo.ViewModel
            
             void Initialize() 
             {
-                _item = new ReplayItem(_articleName, _originalText);
+                _item = new ReplayItem(_originalText);
                 Disposable.Create(() =>
                 {
                     if (!_isFinished) 
@@ -218,14 +227,16 @@ namespace Demo.ViewModel
                 .Subscribe(userText =>
                 {
                     var originalSubstring = _originalText.Substring(0, Math.Min(userText.Length, _originalText.Length));
-                    var isValid = userText == originalSubstring;
-                    IsValid = isValid;
+                    var valid = userText == originalSubstring ? InputFrameState.Valid : InputFrameState.Invalid;
+                    State = valid;
 
                     //Hint Text
                     HintText = _originalText.Substring(Math.Min(_originalText.Length, userText.Length));
 
-                    if (IsValid && userText.Length == _originalText.Length) 
+                    if (InputFrameState.Valid == State 
+                        && userText.Length == _originalText.Length) 
                     {
+                        State = InputFrameState.Done;
                         _isFinished = true;
                         _finished(_item);
                     }
@@ -237,11 +248,6 @@ namespace Demo.ViewModel
 
             }
 
-            public bool IsValid 
-            {
-                get { return _isValid; }
-                private set { this.SetProperty(ref _isValid, value); }
-            }
 
             public string UserText 
             {
@@ -261,14 +267,18 @@ namespace Demo.ViewModel
                 get { return _hintText; }
                 private set { SetProperty(ref _hintText, value); }
             }
-
-            public InputFrameState State => throw new NotImplementedException();
+            public InputFrameState State
+            {
+                get { return _state; }
+                private set { SetProperty(ref _state, value); }
+            }
         }
         class ReplayFrame : ObservableObject, IReplayFrame, IDisposable
         {
             CompositeDisposable _disposer = new CompositeDisposable();
             string _replayingText;
             string _hintText;
+            ReplayFrameState _state;
 
             //dependency
             string _originalText;
@@ -282,12 +292,16 @@ namespace Demo.ViewModel
             }
             void Initialize() 
             {
+                State = ReplayFrameState.Replaying;
                 _replaySequence.Subscribe(s => 
                 {
                     ReplayingText = s;
 
                     //Hint Text
                     HintText = _originalText.Substring(Math.Min(_originalText.Length, ReplayingText.Length));
+                }, () =>
+                {
+                    State = ReplayFrameState.Done;
                 })
                     .DisposedBy(_disposer);
             }
@@ -304,11 +318,11 @@ namespace Demo.ViewModel
                 private set { SetProperty(ref _hintText, value); }
             }
 
-            public ReplayFrameState State => throw new NotImplementedException();
-        }
-        static class FrameUtility 
-        {
-            
+            public ReplayFrameState State
+            {
+                get { return _state; }
+                private set { SetProperty(ref _state, value); }
+            }
         }
     }
 }

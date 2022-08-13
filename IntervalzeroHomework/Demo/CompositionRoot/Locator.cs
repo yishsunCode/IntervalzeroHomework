@@ -22,8 +22,8 @@ namespace Demo.CompositionRoot
                 var builder = new ContainerBuilder();
 
                 builder
-                    .Register((c, p) => FakeDemoViewModelFactory.Create())
-                    //.RegisterType<DemoViewModel>()
+                    //.Register((c, p) => FakeDemoViewModelFactory.Create())
+                    .RegisterType<DemoViewModel>()
                     .As<IDemoViewModel>()
                     ;
 
