@@ -13,7 +13,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="42" />
-        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Opacity" Value="0.25" />
     </Style>
 
     <!--  Brush  -->
@@ -46,7 +46,7 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:InputFrameState.Done}">
                 <Setter TargetName="uxBox" Property="Background" Value="{StaticResource DoneBrush}" />
-                <Setter TargetName="uxBox" Property="IsEnabled" Value="False" />
+                <Setter TargetName="uxBox" Property="IsReadOnly" Value="True" />
                 <Setter TargetName="uxMessage" Property="Text" Value="Done" />
             </DataTrigger>
         </DataTemplate.Triggers>
