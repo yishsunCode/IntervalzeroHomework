@@ -10,6 +10,7 @@ using System.Windows;
 
 namespace Demo.Design
 {
+    using static InputFrameState;
     public class FakeDemoViewModelFactory
     {
         public static IDemoViewModel Create() 
@@ -73,20 +74,21 @@ namespace Demo.Design
                 else if (1 == mod)
                 {
                     var frame = Substitute.For<IInputFrame>();
-                    
+
                     //
                     var ticks = new[]
                     {
-                        Observable.Return(true),
-                        Observable.Interval(validChangingTime).Select(i => i % 2 != 0),
-                    }.Merge();
+                        Observable.Return(Valid),
+                        Observable.Timer(validChangingTime).Select(_ => Invalid),
+                        Observable.Timer(validChangingTime).Select(_ => Done),
+                    }.Concat();
 
                     ticks
                         .ObserveOn(SynchronizationContext.Current)
-                        .Subscribe(valid =>
+                        .Subscribe(state =>
                         {
-                            frame.IsValid.Returns(valid);
-                            frame.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(frame, new PropertyChangedEventArgs(nameof(frame.IsValid)));
+                            frame.State.Returns(state);
+                            frame.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(frame, new PropertyChangedEventArgs(nameof(frame.State)));
                         });
                     //
                     frame.UserText.Returns("UserInput...");
@@ -105,13 +107,13 @@ namespace Demo.Design
                         "Test_", "Replay_", "Function_", "Now_"
                     };
 
-                    var ticks = Observable.Interval(replayAppendTime)
+                    var wordTicks = Observable.Interval(replayAppendTime)
                     .Select(i => (int)i)
                     .Select(i => appends[i])
                     .Take(appends.Length)
                     ;
 
-                    ticks
+                    wordTicks
                         .ObserveOn(SynchronizationContext.Current)
                         .Subscribe(word =>
                         {
@@ -120,6 +122,16 @@ namespace Demo.Design
                             frame.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(frame, new PropertyChangedEventArgs(nameof(frame.ReplayingText)));
                         });
 
+                    new[]
+                    {
+                        Observable.Return(ReplayFrameState.Replaying),
+                        Observable.Interval(replayAppendTime).Select(i => i % 2 == 0 ? ReplayFrameState.Done : ReplayFrameState.Replaying)
+                    }.Merge()
+                    .Subscribe(state =>
+                    {
+                        frame.State.Returns(state);
+                        frame.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(frame, new PropertyChangedEventArgs(nameof(frame.State)));
+                    });
                     //
                     frame.ReplayingText.Returns("Replay...");
                     frame.HintText.Returns("HINT~hint~HintHINT");

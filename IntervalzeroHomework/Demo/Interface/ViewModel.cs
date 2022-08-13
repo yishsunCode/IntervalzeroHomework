@@ -22,14 +22,17 @@ namespace Demo.Interface
     public interface IInputFrame : INotifyPropertyChanged
     {
         string HintText { get; }
-        bool IsValid { get; }
+        InputFrameState State { get; }
         string UserText { get; set; }
     }
+    public enum InputFrameState { Valid, Invalid, Done }
     public interface IReplayFrame : INotifyPropertyChanged
     {
         string HintText { get; }
         string ReplayingText { get; }
+        ReplayFrameState State { get; }
     }
+    public enum ReplayFrameState { Replaying, Done }
     public interface IWaitingFrame 
     {
         

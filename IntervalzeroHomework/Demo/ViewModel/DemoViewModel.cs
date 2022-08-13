@@ -261,6 +261,8 @@ namespace Demo.ViewModel
                 get { return _hintText; }
                 private set { SetProperty(ref _hintText, value); }
             }
+
+            public InputFrameState State => throw new NotImplementedException();
         }
         class ReplayFrame : ObservableObject, IReplayFrame, IDisposable
         {
@@ -301,6 +303,8 @@ namespace Demo.ViewModel
                 get { return _hintText; }
                 private set { SetProperty(ref _hintText, value); }
             }
+
+            public ReplayFrameState State => throw new NotImplementedException();
         }
         static class FrameUtility 
         {

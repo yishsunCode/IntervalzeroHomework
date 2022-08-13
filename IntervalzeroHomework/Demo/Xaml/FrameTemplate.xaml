@@ -9,13 +9,22 @@
         <Setter Property="Opacity" Value="0.4" />
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
+    <Style x:Key="MessageStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="42" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+
+    <!--  Brush  -->
+    <SolidColorBrush x:Key="InvalidBrush" Color="#FFFFF2F4" />
+    <SolidColorBrush x:Key="ValidBrush" Color="White" />
+    <SolidColorBrush x:Key="DoneBrush" Color="#FFCAEECA" />
+    <SolidColorBrush x:Key="ReplayBrush" Color="LightYellow" />
 
     <!--  Template  -->
     <DataTemplate DataType="{x:Type vm:IWaitingFrame}">
-        <TextBlock HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="42"
-                   Text="Waiting" />
+        <TextBlock Style="{StaticResource MessageStyle}" Text="Typing Practice" />
     </DataTemplate>
     <DataTemplate DataType="{x:Type vm:IInputFrame}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -26,10 +35,19 @@
                 <Run Foreground="Transparent" Text="{Binding Path=UserText, Mode=OneWay}" />
                 <Run Text="{Binding Path=HintText, Mode=OneWay}" />
             </TextBlock>
+            <TextBlock x:Name="uxMessage" Style="{StaticResource MessageStyle}" />
         </Grid>
         <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding Path=IsValid}" Value="False">
-                <Setter TargetName="uxBox" Property="Background" Value="#FFFFF2F4" />
+            <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:InputFrameState.Valid}">
+                <Setter TargetName="uxBox" Property="Background" Value="{StaticResource ValidBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:InputFrameState.Invalid}">
+                <Setter TargetName="uxBox" Property="Background" Value="{StaticResource InvalidBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:InputFrameState.Done}">
+                <Setter TargetName="uxBox" Property="Background" Value="{StaticResource DoneBrush}" />
+                <Setter TargetName="uxBox" Property="IsEnabled" Value="False" />
+                <Setter TargetName="uxMessage" Property="Text" Value="Done" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
@@ -37,7 +55,6 @@
     <DataTemplate DataType="{x:Type vm:IReplayFrame}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBox x:Name="uxBox"
-                     Background="LightYellow"
                      IsReadOnly="True"
                      Style="{StaticResource InputBox}"
                      Text="{Binding Path=ReplayingText, Mode=OneWay}" />
@@ -45,11 +62,17 @@
                 <Run Foreground="Transparent" Text="{Binding Path=ReplayingText, Mode=OneWay}" />
                 <Run Text="{Binding Path=HintText, Mode=OneWay}" />
             </TextBlock>
-            <TextBlock HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="42"
-                       Opacity="0.05"
-                       Text="Replaying" />
+            <TextBlock x:Name="uxMessage" Style="{StaticResource MessageStyle}" />
         </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:ReplayFrameState.Replaying}">
+                <Setter TargetName="uxBox" Property="Background" Value="{StaticResource ReplayBrush}" />
+                <Setter TargetName="uxMessage" Property="Text" Value="Replaying..." />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=State}" Value="{x:Static vm:ReplayFrameState.Done}">
+                <Setter TargetName="uxBox" Property="Background" Value="{StaticResource DoneBrush}" />
+                <Setter TargetName="uxMessage" Property="Text" Value="Done" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
 </ResourceDictionary>
