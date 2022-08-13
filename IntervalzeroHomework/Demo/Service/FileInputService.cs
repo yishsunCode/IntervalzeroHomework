@@ -22,7 +22,12 @@ namespace Demo.Service
 
         public IList<string> GetArticleList()
         {
+            var current = Directory.GetCurrentDirectory();
+            var projPath = Path.GetFullPath(Path.Combine(current, "..\\..\\..\\"));
+
             var dialog = new FolderBrowserDialog();
+            dialog.SelectedPath = "TestData";
+            dialog.InitialDirectory = projPath;
             switch (dialog.ShowDialog())
             {
                 case DialogResult.OK:
