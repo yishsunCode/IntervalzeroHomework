@@ -2,6 +2,7 @@
 using Autofac.Features.OwnedInstances;
 using Demo.Design;
 using Demo.Interface;
+using Demo.Service;
 using Demo.View;
 using Demo.ViewModel;
 using System;
@@ -28,7 +29,8 @@ namespace Demo.CompositionRoot
                     ;
 
                 builder
-                    .Register((c, p) => FakeInputServiceFactory.Create())
+                    //.Register((c, p) => FakeInputServiceFactory.Create())
+                    .RegisterType<FileInputService>()
                     .As<IInputService>()
                     ;
 
